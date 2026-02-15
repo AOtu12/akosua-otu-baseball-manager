@@ -65,6 +65,27 @@ def display_menu():
     print(", ".join(POSITIONS))
     print("=" * 64)
 
+def remove_player(lineup):
+    # Ask user for lineup number to delete
+    num = get_int("Number: ")
+
+    # Validate range
+    if num < 1 or num > len(lineup):
+        print("Invalid lineup number.")
+        return
+
+    # Get the player name before removing
+    name = lineup[num - 1][0]
+
+    # Remove from list
+    lineup.pop(num - 1)
+
+    # Save updated lineup to CSV
+    db.save_lineup(lineup)
+
+    print(f"{name} was deleted.")
+   
+
 
 def main():
     # Load saved lineup from CSV (or empty list if file missing)
@@ -91,7 +112,8 @@ def main():
             print(f"{name} was added.")
 
         elif option == "3":
-            print("Remove player - coming next commit")
+            remove_player(lineup)
+
 
         elif option == "4":
             print("Move player - coming next commit")
