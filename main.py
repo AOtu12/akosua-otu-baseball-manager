@@ -86,6 +86,36 @@ def remove_player(lineup):
     print(f"{name} was deleted.")
    
 
+def move_player(lineup):
+    # Ask for current lineup number
+    cur = get_int("Current lineup number: ")
+
+    if cur < 1 or cur > len(lineup):
+        print("Invalid lineup number.")
+        return
+
+    # Get player name before moving
+    name = lineup[cur - 1][0]
+    print(f"{name} was selected.")
+
+    # Ask for new lineup position
+    new = get_int("New lineup number: ")
+
+    if new < 1 or new > len(lineup):
+        print("Invalid lineup number.")
+        return
+
+    # Remove player from old position
+    player = lineup.pop(cur - 1)
+
+    # Insert player at new position
+    lineup.insert(new - 1, player)
+
+    # Save updated lineup
+    db.save_lineup(lineup)
+
+    print(f"{name} was moved.")
+
 
 def main():
     # Load saved lineup from CSV (or empty list if file missing)
@@ -116,7 +146,8 @@ def main():
 
 
         elif option == "4":
-            print("Move player - coming next commit")
+            move_player(lineup)
+
 
         elif option == "5":
             print("Edit position - coming next commit")
