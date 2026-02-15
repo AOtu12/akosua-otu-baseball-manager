@@ -46,31 +46,68 @@ def display(lineup):
         print(f"{i} {name:20}{pos:4}{ab:5}{hits:5}{avg:.3f}")
 
 
+def display_title():
+    print("=" * 64)
+    print(" Baseball Team Manager")
+    print("=" * 64)
+
+
+def display_menu():
+    print("MENU OPTIONS")
+    print("1 - Display lineup")
+    print("2 - Add player")
+    print("3 - Remove player")
+    print("4 - Move player")
+    print("5 - Edit player position")
+    print("6 - Edit player stats")
+    print("7 - Exit program")
+    print("POSITIONS")
+    print(", ".join(POSITIONS))
+    print("=" * 64)
+
+
 def main():
+    # Load saved lineup from CSV (or empty list if file missing)
     lineup = db.load_lineup()
 
-    while True:
-        print("\nMENU OPTIONS")
-        print("1 Display lineup")
-        print("2 Add player")
-        print("7 Exit")
+    display_title()
 
-        option = input("Option: ")
+    while True:
+        display_menu()
+        option = input("Menu option: ").strip()
 
         if option == "1":
             display(lineup)
 
         elif option == "2":
-            name = input("Name: ")
+            # Add player (we will enhance validation in a later commit)
+            name = input("Name: ").strip()
             pos = get_position()
             ab = get_int("At bats: ")
             hits = get_int("Hits: ")
 
             lineup.append([name, pos, ab, hits])
             db.save_lineup(lineup)
+            print(f"{name} was added.")
+
+        elif option == "3":
+            print("Remove player - coming next commit")
+
+        elif option == "4":
+            print("Move player - coming next commit")
+
+        elif option == "5":
+            print("Edit position - coming next commit")
+
+        elif option == "6":
+            print("Edit stats - coming next commit")
 
         elif option == "7":
+            print("Bye!")
             break
+
+        else:
+            print("Invalid menu option. Please try again.")
 
 
 if __name__ == "__main__":
