@@ -116,6 +116,29 @@ def move_player(lineup):
 
     print(f"{name} was moved.")
 
+def edit_player_position(lineup):
+    # Ask which player to edit
+    num = get_int("Lineup number: ")
+
+    if num < 1 or num > len(lineup):
+        print("Invalid lineup number.")
+        return
+
+    # Current player details
+    name, pos, ab, hits = lineup[num - 1]
+    print(f"You selected {name} POS={pos}")
+
+    # Ask for new position (must be valid)
+    new_pos = get_position()
+
+    # Update position in the list
+    lineup[num - 1][1] = new_pos
+
+    # Save to CSV
+    db.save_lineup(lineup)
+
+    print(f"{name} was updated.")
+
 
 def main():
     # Load saved lineup from CSV (or empty list if file missing)
@@ -150,7 +173,8 @@ def main():
 
 
         elif option == "5":
-            print("Edit position - coming next commit")
+             edit_player_position(lineup)
+
 
         elif option == "6":
             print("Edit stats - coming next commit")
