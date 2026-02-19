@@ -73,7 +73,7 @@ def display_menu(game_date):
         print("Game is today!")
     else:
         print(f"Game date was {-diff} day(s) ago.")
-    print("-" * 64)
+    print("=" * 64)
 
     print("MENU OPTIONS")
     print("1 - Display lineup")
@@ -219,6 +219,48 @@ def days_until_game(game_date):
     today = date.today()
     return (game_date - today).days
 
+
+
+def add_player(lineup):
+    """
+    Section 2 improvement:
+    Add player with a friendlier input flow.
+    Keeps asking until the user enters valid at-bats and hits.
+    """
+
+    # Get player name
+    name = input("Name: ").strip()
+
+    # Get valid position
+    pos = get_position()
+
+    # Keep asking until stats are valid
+    while True:
+        ab = get_int("At bats: ")
+        hits = get_int("Hits: ")
+
+        # Validation: no negatives
+        if ab < 0 or hits < 0:
+            print("At bats and hits cannot be negative. Try again.")
+            continue
+
+        # Validation: hits cannot exceed at-bats
+        if hits > ab:
+            print("Hits cannot be greater than at bats. Try again.")
+            continue
+
+        # If input is valid, break out of loop
+        break
+
+    # Add to lineup list
+    lineup.append([name, pos, ab, hits])
+
+    # Save to CSV
+    db.save_lineup(lineup)
+
+    print(f"{name} was added.")
+
+
    
 
 
@@ -241,24 +283,8 @@ def main():
 
        
         elif option == "2":
-          name = input("Name: ").strip()
-          pos = get_position()
-          ab = get_int("At bats: ")
-          hits = get_int("Hits: ")
+            add_player(lineup)
 
-          # Validation rules (same as edit stats)
-          if ab < 0 or hits < 0:
-             print("At bats and hits cannot be negative.")
-          continue
-
-          if hits > ab:
-            print("Hits cannot be greater than at bats.")
-          continue
-
-          lineup.append([name, pos, ab, hits])
-          db.save_lineup(lineup)
-
-          print(f"{name} was added.")
 
         elif option == "3":
             remove_player(lineup)
@@ -269,7 +295,7 @@ def main():
 
 
         elif option == "5":
-             edit_player_position(lineup)
+            edit_player_position(lineup)
 
 
         elif option == "6":
