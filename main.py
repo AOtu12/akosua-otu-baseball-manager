@@ -139,6 +139,42 @@ def edit_player_position(lineup):
 
     print(f"{name} was updated.")
 
+def edit_player_stats(lineup):
+    # Ask which player to edit (user uses lineup number from display)
+    num = get_int("Lineup number: ")
+
+    # Validate the lineup number is within range
+    if num < 1 or num > len(lineup):
+        print("Invalid lineup number.")
+        return
+
+    # Get current player details
+    name, pos, ab, hits = lineup[num - 1]
+    print(f"You selected {name} AB={ab} H={hits}")
+
+    # Ask for new stats
+    new_ab = get_int("At bats: ")
+    new_hits = get_int("Hits: ")
+
+    # Validation rules (required)
+    if new_ab < 0 or new_hits < 0:
+        print("At bats and hits cannot be negative.")
+        return
+
+    if new_hits > new_ab:
+        print("Hits cannot be greater than at bats.")
+        return
+
+    # Update the lineup list
+    lineup[num - 1][2] = new_ab
+    lineup[num - 1][3] = new_hits
+
+    # Save updated data to CSV
+    db.save_lineup(lineup)
+
+    print(f"{name} was updated.")
+   
+
 
 def main():
     # Load saved lineup from CSV (or empty list if file missing)
@@ -177,7 +213,7 @@ def main():
 
 
         elif option == "6":
-            print("Edit stats - coming next commit")
+            edit_player_stats(lineup)
 
         elif option == "7":
             print("Bye!")
