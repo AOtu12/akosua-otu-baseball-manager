@@ -7,6 +7,8 @@
 # -------------------------------------
 
 import db
+from datetime import date
+
 
 POSITIONS = ("C", "1B", "2B", "3B", "SS", "LF", "CF", "RF", "P")
 
@@ -61,7 +63,18 @@ def display_title():
     print("=" * 64)
 
 
-def display_menu():
+def display_menu(game_date):
+    # Section 2 improvement: show game date info
+    print(f"Game date: {game_date}")
+    diff = days_until_game(game_date)
+    if diff > 0:
+        print(f"Days until game: {diff}")
+    elif diff == 0:
+        print("Game is today!")
+    else:
+        print(f"Game date was {-diff} day(s) ago.")
+    print("-" * 64)
+
     print("MENU OPTIONS")
     print("1 - Display lineup")
     print("2 - Add player")
@@ -182,6 +195,30 @@ def edit_player_stats(lineup):
     db.save_lineup(lineup)
 
     print(f"{name} was updated.")
+
+
+def get_game_date():
+    """
+    Ask user for a game date in YYYY-MM-DD format.
+    Keeps asking until the user enters a valid date.
+    """
+    while True:
+        text = input("Game date (YYYY-MM-DD): ").strip()
+        try:
+            year, month, day = map(int, text.split("-"))
+            return date(year, month, day)
+        except ValueError:
+            print("Invalid date. Please use YYYY-MM-DD (example: 2026-03-10).")
+
+
+def days_until_game(game_date):
+    """
+    Returns the number of days from today until the game date.
+    Can be negative if the date is in the past.
+    """
+    today = date.today()
+    return (game_date - today).days
+
    
 
 
@@ -191,8 +228,12 @@ def main():
 
     display_title()
 
+    # Section 2 improvement: ask for game date once at start
+    game_date = get_game_date()
+
+
     while True:
-        display_menu()
+        display_menu(game_date)
         option = input("Menu option: ").strip()
 
         if option == "1":
