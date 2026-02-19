@@ -189,16 +189,26 @@ def main():
         if option == "1":
             display(lineup)
 
+       
         elif option == "2":
-            # Add player (we will enhance validation in a later commit)
-            name = input("Name: ").strip()
-            pos = get_position()
-            ab = get_int("At bats: ")
-            hits = get_int("Hits: ")
+          name = input("Name: ").strip()
+          pos = get_position()
+          ab = get_int("At bats: ")
+          hits = get_int("Hits: ")
 
-            lineup.append([name, pos, ab, hits])
-            db.save_lineup(lineup)
-            print(f"{name} was added.")
+          # Validation rules (same as edit stats)
+          if ab < 0 or hits < 0:
+             print("At bats and hits cannot be negative.")
+          continue
+
+          if hits > ab:
+            print("Hits cannot be greater than at bats.")
+          continue
+
+          lineup.append([name, pos, ab, hits])
+          db.save_lineup(lineup)
+
+          print(f"{name} was added.")
 
         elif option == "3":
             remove_player(lineup)
