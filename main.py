@@ -36,14 +36,23 @@ def calc_avg(ab, hits):
 
 
 def display(lineup):
-    print("\nPlayer POS AB H AVG")
-    print("-" * 40)
+    """
+    Section 2 improvement:
+    Display lineup with cleaner formatting and 64-character lines.
+    """
+
+    print("\n" + "=" * 64)
+    print(f"{'No':<4}{'Player':<20}{'POS':<6}{'AB':<6}{'H':<6}{'AVG':<6}")
+    print("=" * 64)
 
     for i, player in enumerate(lineup, 1):
         name, pos, ab, hits = player
         avg = calc_avg(ab, hits)
 
-        print(f"{i} {name:20}{pos:4}{ab:5}{hits:5}{avg:.3f}")
+        # Show avg with 3 decimals (required format)
+        print(f"{i:<4}{name:<20}{pos:<6}{ab:<6}{hits:<6}{avg:<6.3f}")
+
+    print("=" * 64)
 
 
 def display_title():
