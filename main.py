@@ -130,34 +130,35 @@ def remove_player(lineup):
     db.save_lineup(lineup.to_dicts())
 
     print(f"{name} was deleted.")
-    
+
 def move_player(lineup):
-    # Ask for current lineup number
+    """
+    Section 3 improvement:
+    Move a player using the Lineup object method.
+    """
     cur = get_int("Current lineup number: ")
 
-    if cur < 1 or cur > len(lineup):
+    # Validate current number
+    if cur < 1 or cur > len(lineup.players):
         print("Invalid lineup number.")
         return
 
-    # Get player name before moving
-    name = lineup[cur - 1]["name"]
+    # Show selected player name (from Player object)
+    name = lineup.players[cur - 1].name
     print(f"{name} was selected.")
-
-    # Ask for new lineup position
+    
     new = get_int("New lineup number: ")
 
-    if new < 1 or new > len(lineup):
+    # Validate new number
+    if new < 1 or new > len(lineup.players):
         print("Invalid lineup number.")
         return
 
-    # Remove player from old position
-    player = lineup.pop(cur - 1)
-
-    # Insert player at new position
-    lineup.insert(new - 1, player)
+    # Move using Lineup method
+    lineup.move_player(cur, new)
 
     # Save updated lineup
-    db.save_lineup(lineup)
+    db.save_lineup(lineup.to_dicts())
 
     print(f"{name} was moved.")
 
