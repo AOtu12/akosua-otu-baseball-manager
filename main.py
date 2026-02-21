@@ -163,28 +163,31 @@ def move_player(lineup):
     print(f"{name} was moved.")
 
 def edit_player_position(lineup):
-    # Ask which player to edit
+    """
+    Section 3 improvement:
+    Edit a player's position using Player objects.
+    """
     num = get_int("Lineup number: ")
 
-    if num < 1 or num > len(lineup):
+    # Validate lineup number
+    if num < 1 or num > len(lineup.players):
         print("Invalid lineup number.")
         return
 
-    # Current player details
-    player = lineup[num - 1]
-    print(f"You selected {player['name']} POS={player['position']}")
+    # Get the selected Player object
+    player = lineup.players[num - 1]
 
-    # Ask for new position (must be valid)
+    # Show current position
+    print(f"You selected {player.name} POS={player.position}")
+
+    # Ask for new position and update the Player object
     new_pos = get_position()
-    
-    # Update position in the list
-    player["position"] = new_pos
+    player.position = new_pos
 
+    # Save updated lineup to CSV
+    db.save_lineup(lineup.to_dicts())
 
-
-    # Save to CSV
-    db.save_lineup(lineup)
-    print(f"{player['name']} was updated.")
+    print(f"{player.name} was updated.")
 
 def edit_player_stats(lineup):
    # Get the selected player dictionary from the lineup list
