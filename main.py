@@ -8,6 +8,7 @@
 
 import db
 from datetime import date
+from objects import Player, Lineup
 
 
 POSITIONS = ("C", "1B", "2B", "3B", "SS", "LF", "CF", "RF", "P")
@@ -277,15 +278,12 @@ def add_player(lineup):
         # If input is valid, break out of loop
         break
 
-    # Add to lineup list
-    lineup.append({
-    "name": name,
-    "position": pos,
-    "at_bats": ab,
-    "hits": hits
-   })
-    # Save to CSV
-    db.save_lineup(lineup)
+    # Create a Player object and add it to Lineup object
+    lineup.add_player(Player(name, pos, ab, hits))
+
+    # Save lineup by converting Player objects back to dictionaries
+    db.save_lineup(lineup.to_dicts())
+    
 
     print(f"{name} was added.")
 
@@ -294,8 +292,12 @@ def add_player(lineup):
 
 
 def main():
-    # Load saved lineup from CSV (or empty list if file missing)
-    lineup = db.load_lineup()
+    # Load list of dictionaries from CSV using db.py
+    data = db.load_lineup()
+
+    # Convert dictionary data into Player objects inside a Lineup object
+    lineup = Lineup()
+    lineup.load_from_dicts(data)
 
     display_title()
 
@@ -308,7 +310,8 @@ def main():
         option = input("Menu option: ").strip()
 
         if option == "1":
-            display(lineup)
+     # Convert Player objects back into dicts for the existing display() function
+           display(lineup.to_dicts())
 
        
         elif option == "2":
