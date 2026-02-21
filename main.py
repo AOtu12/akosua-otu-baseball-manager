@@ -112,26 +112,25 @@ def display_menu(game_date):
     print("=" * 64)
 
 def remove_player(lineup):
-    # Ask user for lineup number to delete
+    """
+    Section 3 improvement:
+    Remove a player using the Lineup object method.
+    """
     num = get_int("Number: ")
 
-    # Validate range
-    if num < 1 or num > len(lineup):
+    # Validate range using number of Player objects
+    if num < 1 or num > len(lineup.players):
         print("Invalid lineup number.")
         return
 
-    # Get the player name before removing
-    name = lineup[num - 1]["name"]
+    # Remove the player and get their name
+    name = lineup.remove_player(num)
 
-    # Remove from list
-    lineup.pop(num - 1)
-
-    # Save updated lineup to CSV
-    db.save_lineup(lineup)
+    # Save updated lineup back to CSV (convert objects -> dicts)
+    db.save_lineup(lineup.to_dicts())
 
     print(f"{name} was deleted.")
-   
-
+    
 def move_player(lineup):
     # Ask for current lineup number
     cur = get_int("Current lineup number: ")
