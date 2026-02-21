@@ -23,7 +23,7 @@ def get_int(prompt):
 
 def get_position():
     while True:
-        pos = input("Position: ").upper()
+        pos = input("Position: ").strip().upper()
 
         if pos in POSITIONS:
             return pos
@@ -31,9 +31,16 @@ def get_position():
         print("Invalid position.")
 
 
-def calc_avg(ab, hits):
+def calc_avg(player):
+    """
+    Calculate batting average for a player dict.
+    """
+    ab = player["at_bats"]
+    hits = player["hits"]
+
     if ab == 0:
         return 0.0
+
     return round(hits / ab, 3)
 
 
@@ -41,18 +48,23 @@ def display(lineup):
     """
     Section 2 improvement:
     Display lineup with cleaner formatting and 64-character lines.
+    Uses dictionaries for players.
     """
-
     print("\n" + "=" * 64)
     print(f"{'No':<4}{'Player':<20}{'POS':<6}{'AB':<6}{'H':<6}{'AVG':<6}")
     print("=" * 64)
 
     for i, player in enumerate(lineup, 1):
-        name, pos, ab, hits = player
-        avg = calc_avg(ab, hits)
+        avg = calc_avg(player)
 
-        # Show avg with 3 decimals (required format)
-        print(f"{i:<4}{name:<20}{pos:<6}{ab:<6}{hits:<6}{avg:<6.3f}")
+        print(
+            f"{i:<4}"
+            f"{player['name']:<20}"
+            f"{player['position']:<6}"
+            f"{player['at_bats']:<6}"
+            f"{player['hits']:<6}"
+            f"{avg:<6.3f}"
+        )
 
     print("=" * 64)
 
@@ -64,16 +76,27 @@ def display_title():
 
 
 def display_menu(game_date):
-    # Section 2 improvement: show game date info
-    print(f"Game date: {game_date}")
-    diff = days_until_game(game_date)
-    if diff > 0:
-        print(f"Days until game: {diff}")
-    elif diff == 0:
-        print("Game is today!")
-    else:
-        print(f"Game date was {-diff} day(s) ago.")
+    """
+    Section 2 requirement:
+    Show CURRENT DATE always.
+    Show GAME DATE if provided.
+    Show DAYS UNTIL GAME only if game is in the future.
+    """
+    today = date.today()
+
     print("=" * 64)
+    print(" Baseball Team Manager")
+    print(f"CURRENT DATE: {today:%Y-%m-%d}")
+
+    # If user entered a game date, show it
+    if game_date is not None:
+        print(f"GAME DATE: {game_date:%Y-%m-%d}")
+
+        diff = (game_date - today).days
+
+        # Only show days until game if game is in the future
+        if diff > 0:
+            print(f"DAYS UNTIL GAME: {diff}")
 
     print("MENU OPTIONS")
     print("1 - Display lineup")
@@ -97,7 +120,7 @@ def remove_player(lineup):
         return
 
     # Get the player name before removing
-    name = lineup[num - 1][0]
+    name = lineup[num - 1]["name"]
 
     # Remove from list
     lineup.pop(num - 1)
@@ -117,7 +140,7 @@ def move_player(lineup):
         return
 
     # Get player name before moving
-    name = lineup[cur - 1][0]
+    name = lineup[cur - 1]["name"]
     print(f"{name} was selected.")
 
     # Ask for new lineup position
@@ -147,69 +170,71 @@ def edit_player_position(lineup):
         return
 
     # Current player details
-    name, pos, ab, hits = lineup[num - 1]
-    print(f"You selected {name} POS={pos}")
+    player = lineup[num - 1]
+    print(f"You selected {player['name']} POS={player['position']}")
 
     # Ask for new position (must be valid)
     new_pos = get_position()
-
+    
     # Update position in the list
-    lineup[num - 1][1] = new_pos
+    player["position"] = new_pos
+
+
 
     # Save to CSV
     db.save_lineup(lineup)
-
-    print(f"{name} was updated.")
+    print(f"{player['name']} was updated.")
 
 def edit_player_stats(lineup):
-    # Ask which player to edit (user uses lineup number from display)
-    num = get_int("Lineup number: ")
+   # Get the selected player dictionary from the lineup list
+   # We subtract 1 because lineup numbers start at 1 for users,
+   # but Python list indexes start at 0.
+   player = lineup[num - 1]
 
-    # Validate the lineup number is within range
-    if num < 1 or num > len(lineup):
-        print("Invalid lineup number.")
-        return
+   # Display current player stats before editing
+   print(f"You selected {player['name']} AB={player['at_bats']} H={player['hits']}")
 
-    # Get current player details
-    name, pos, ab, hits = lineup[num - 1]
-    print(f"You selected {name} AB={ab} H={hits}")
+   # Ask user for new statistics
+   new_ab = get_int("At bats: ")
+   new_hits = get_int("Hits: ")
 
-    # Ask for new stats
-    new_ab = get_int("At bats: ")
-    new_hits = get_int("Hits: ")
+   # Validation: at-bats and hits must not be negative
+   if new_ab < 0 or new_hits < 0:
+      print("At bats and hits cannot be negative.")
+      return
 
-    # Validation rules (required)
-    if new_ab < 0 or new_hits < 0:
-        print("At bats and hits cannot be negative.")
-        return
+   # Validation: hits cannot exceed at-bats
+   if new_hits > new_ab:
+      print("Hits cannot be greater than at bats.")
+      return
 
-    if new_hits > new_ab:
-        print("Hits cannot be greater than at bats.")
-        return
+   # Update the player dictionary with new values
+   player["at_bats"] = new_ab
+   player["hits"] = new_hits
 
-    # Update the lineup list
-    lineup[num - 1][2] = new_ab
-    lineup[num - 1][3] = new_hits
+   # Save updated lineup back to CSV file
+   db.save_lineup(lineup)
 
-    # Save updated data to CSV
-    db.save_lineup(lineup)
-
-    print(f"{name} was updated.")
-
+   # Confirm update to user
+   print(f"{player['name']} was updated.")
 
 def get_game_date():
     """
     Ask user for a game date in YYYY-MM-DD format.
-    Keeps asking until the user enters a valid date.
+    User can press Enter to skip (no game date).
     """
     while True:
-        text = input("Game date (YYYY-MM-DD): ").strip()
+        text = input("GAME DATE (YYYY-MM-DD) or Enter to skip: ").strip()
+
+        # If user skips, return None
+        if text == "":
+            return None
+
         try:
             year, month, day = map(int, text.split("-"))
             return date(year, month, day)
         except ValueError:
             print("Invalid date. Please use YYYY-MM-DD (example: 2026-03-10).")
-
 
 def days_until_game(game_date):
     """
@@ -253,8 +278,12 @@ def add_player(lineup):
         break
 
     # Add to lineup list
-    lineup.append([name, pos, ab, hits])
-
+    lineup.append({
+    "name": name,
+    "position": pos,
+    "at_bats": ab,
+    "hits": hits
+   })
     # Save to CSV
     db.save_lineup(lineup)
 
