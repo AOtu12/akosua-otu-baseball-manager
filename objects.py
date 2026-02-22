@@ -148,3 +148,17 @@ class Lineup:
         player = self.players.pop(current_number - 1)
         self.players.insert(new_number - 1, player)
         return player.full_name
+    
+    def __len__(self):
+        """
+        Return number of players in lineup.
+        Allows: len(lineup)
+        """
+        return len(self.players)
+
+    def __iter__(self):
+       """
+       Iterator support.
+       Allows: for p in lineup:
+       """
+       return iter(self.players)

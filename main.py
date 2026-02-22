@@ -119,7 +119,7 @@ def remove_player(lineup):
     num = get_int("Number: ")
 
     # Validate range using number of Player objects
-    if num < 1 or num > len(lineup.players):
+    if num < 1 or num > len(lineup):
         print("Invalid lineup number.")
         return
 
@@ -139,7 +139,7 @@ def move_player(lineup):
     cur = get_int("Current lineup number: ")
 
     # Validate current number
-    if cur < 1 or cur > len(lineup.players):
+    if cur < 1 or cur > len(lineup):
         print("Invalid lineup number.")
         return
 
@@ -150,7 +150,7 @@ def move_player(lineup):
     new = get_int("New lineup number: ")
 
     # Validate new number
-    if new < 1 or new > len(lineup.players):
+    if new < 1 or new > len(lineup):
         print("Invalid lineup number.")
         return
 
@@ -170,7 +170,7 @@ def edit_player_position(lineup):
     num = get_int("Lineup number: ")
 
     # Validate lineup number
-    if num < 1 or num > len(lineup.players):
+    if num < 1 or num > len(lineup):
         print("Invalid lineup number.")
         return
 
@@ -199,7 +199,7 @@ def edit_player_stats(lineup):
     num = get_int("Lineup number: ")
 
     # Validate lineup number using the number of Player objects
-    if num < 1 or num > len(lineup.players):
+    if num < 1 or num > len(lineup):
         print("Invalid lineup number.")
         return
 
