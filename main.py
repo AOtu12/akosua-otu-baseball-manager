@@ -1,25 +1,30 @@
 # main.py
 # ---------------------------------------------------------
-# Baseball Team Manager
-# Section 3 (Object-Oriented Version)
+# Baseball Team Manager (Murach Case Study)
+# Section 3: Object-Oriented Version
 #
-# Uses:
-# - Player and Lineup classes from objects.py
-# - CSV persistence through db.py
-# - Dictionary format for saving/loading:
-#   first_name,last_name,position,at_bats,hits
+# Program responsibilities:
+# - Get user input (menu options)
+# - Call methods on Lineup / Player objects (business logic)
+# - Save and load data using db.py (file/data access)
+#
+# Data format (dictionary / CSV):
+# first_name,last_name,position,at_bats,hits
 # ---------------------------------------------------------
 
 import db
 from datetime import date
 from objects import Player, Lineup
 
-# Valid positions (required)
+# Valid positions tuple (required by spec)
 POSITIONS = ("C", "1B", "2B", "3B", "SS", "LF", "CF", "RF", "P")
 
 
 def get_int(prompt):
-    """Get an integer from the user with validation."""
+    """
+    Get an integer from the user.
+    Re-prompts until the user enters a valid integer.
+    """
     while True:
         try:
             return int(input(prompt))
@@ -28,7 +33,10 @@ def get_int(prompt):
 
 
 def get_position():
-    """Get a valid baseball position from the user."""
+    """
+    Get a valid baseball position from the user.
+    Re-prompts until the user enters one from POSITIONS.
+    """
     while True:
         pos = input("Position: ").strip().upper()
         if pos in POSITIONS:
@@ -37,10 +45,15 @@ def get_position():
 
 
 def calc_avg(player_dict):
-    """Calculate batting average for a player dictionary."""
+    """
+    Calculate batting average from a player dictionary:
+      avg = hits / at_bats
+    Always return a float rounded to 3 decimals.
+    """
     ab = player_dict["at_bats"]
     hits = player_dict["hits"]
 
+    # Avoid divide by zero
     if ab == 0:
         return 0.0
 
@@ -49,9 +62,9 @@ def calc_avg(player_dict):
 
 def display(lineup_dicts):
     """
-    Display lineup with 64-character separator lines.
-    Expects list of dictionaries with:
-    first_name, last_name, position, at_bats, hits
+    Display the lineup in a formatted table.
+    Expects a list of dictionaries with keys:
+      first_name, last_name, position, at_bats, hits
     """
     print("\n" + "=" * 64)
     print(f"{'No':<4}{'Player':<20}{'POS':<6}{'AB':<6}{'H':<6}{'AVG':<6}")
@@ -62,6 +75,7 @@ def display(lineup_dicts):
         name = f"{p['first_name']} {p['last_name']}".strip()
         avg = calc_avg(p)
 
+        # Print one row (spaces used for alignment, no tabs)
         print(
             f"{i:<4}"
             f"{name:<20}"
@@ -75,7 +89,7 @@ def display(lineup_dicts):
 
 
 def display_title():
-    """Display the title banner."""
+    """Display program title banner."""
     print("=" * 64)
     print(" Baseball Team Manager")
     print("=" * 64)
@@ -83,10 +97,14 @@ def display_title():
 
 def display_menu(game_date):
     """
-    Section 2 requirement:
-    - Show CURRENT DATE always
-    - Show GAME DATE if provided
-    - Show DAYS UNTIL GAME only if future
+    Display menu + required date information.
+
+    Requirements:
+    - Always show current date
+    - Ask user for game date once (done in get_game_date)
+    - If game date is provided:
+        - show game date
+        - show days until game ONLY if the date is in the future
     """
     today = date.today()
 
@@ -94,6 +112,7 @@ def display_menu(game_date):
     print(" Baseball Team Manager")
     print(f"CURRENT DATE: {today:%Y-%m-%d}")
 
+    # Show game date info only if the user entered a game date
     if game_date is not None:
         print(f"GAME DATE: {game_date:%Y-%m-%d}")
 
@@ -115,30 +134,38 @@ def display_menu(game_date):
 
 
 def remove_player(lineup):
-    """Remove a player using Lineup methods and save to CSV."""
+    """
+    Remove a player using Lineup object methods.
+    Saves changes back to CSV after removal.
+    """
     num = get_int("Number: ")
 
+    # Validate range
     if num < 1 or num > len(lineup):
         print("Invalid lineup number.")
         return
 
+    # Remove and get player name (Lineup returns full name)
     name = lineup.remove_player(num)
 
-    # Save objects -> dicts
+    # Save updated lineup (objects -> dicts -> CSV)
     db.save_lineup(lineup.to_dicts())
 
     print(f"{name} was deleted.")
 
 
 def move_player(lineup):
-    """Move a player using Lineup methods and save to CSV."""
+    """
+    Move a player from one lineup position to another.
+    Saves changes back to CSV after move.
+    """
     cur = get_int("Current lineup number: ")
 
     if cur < 1 or cur > len(lineup):
         print("Invalid lineup number.")
         return
 
-    # Get selected player (Player object)
+    # Get selected player object so we can print a friendly message
     player = lineup.get_player(cur)
     print(f"{player.full_name} was selected.")
 
@@ -148,15 +175,20 @@ def move_player(lineup):
         print("Invalid lineup number.")
         return
 
+    # Move player using Lineup method
     lineup.move_player(cur, new)
 
+    # Save to CSV
     db.save_lineup(lineup.to_dicts())
 
     print(f"{player.full_name} was moved.")
 
 
 def edit_player_position(lineup):
-    """Edit a player's position using Player objects and save to CSV."""
+    """
+    Change a player's position.
+    Saves changes back to CSV after editing.
+    """
     num = get_int("Lineup number: ")
 
     if num < 1 or num > len(lineup):
@@ -165,18 +197,25 @@ def edit_player_position(lineup):
 
     player = lineup.get_player(num)
 
+    # Show the selected player and current position
     print(f"You selected {player.full_name} POS={player.position}")
 
-    new_pos = get_position()
-    player.position = new_pos
+    # Ask for new position and update the Player object
+    player.position = get_position()
 
+    # Save to CSV
     db.save_lineup(lineup.to_dicts())
 
     print(f"{player.full_name} was updated.")
 
 
 def edit_player_stats(lineup):
-    """Edit a player's stats (AB/H) using Player objects and save to CSV."""
+    """
+    Change a player's at-bats and hits with validation:
+    - no negatives
+    - hits cannot exceed at-bats
+    Saves changes back to CSV after editing.
+    """
     num = get_int("Lineup number: ")
 
     if num < 1 or num > len(lineup):
@@ -185,11 +224,14 @@ def edit_player_stats(lineup):
 
     player = lineup.get_player(num)
 
+    # Show current stats
     print(f"You selected {player.full_name} AB={player.at_bats} H={player.hits}")
 
+    # Get new stats
     new_ab = get_int("At bats: ")
     new_hits = get_int("Hits: ")
 
+    # Validate input
     if new_ab < 0 or new_hits < 0:
         print("At bats and hits cannot be negative.")
         return
@@ -198,16 +240,24 @@ def edit_player_stats(lineup):
         print("Hits cannot be greater than at bats.")
         return
 
+    # Apply update to Player object
     player.at_bats = new_ab
     player.hits = new_hits
 
+    # Save to CSV
     db.save_lineup(lineup.to_dicts())
 
     print(f"{player.full_name} was updated.")
 
 
 def get_game_date():
-    """Ask user for game date YYYY-MM-DD, or Enter to skip."""
+    """
+    Ask user for game date in YYYY-MM-DD format.
+    User can press Enter to skip.
+    Returns:
+      - date object if entered
+      - None if skipped
+    """
     while True:
         text = input("GAME DATE (YYYY-MM-DD) or Enter to skip: ").strip()
 
@@ -223,14 +273,16 @@ def get_game_date():
 
 def add_player(lineup):
     """
-    Add a player (first + last name required).
-    Validate stats, then save to CSV.
+    Add a new player (first + last name required).
+    Validates at-bats and hits.
+    Saves to CSV after adding.
     """
     first_name = input("First name: ").strip()
     last_name = input("Last name: ").strip()
 
     pos = get_position()
 
+    # Keep asking until user enters valid stats
     while True:
         ab = get_int("At bats: ")
         hits = get_int("Hits: ")
@@ -245,55 +297,54 @@ def add_player(lineup):
 
         break
 
-    # Create Player object using first/last (required)
+    # Create Player object and add to Lineup
     lineup.add_player(Player(first_name, last_name, pos, ab, hits))
 
-    # Save objects -> dicts (new format)
+    # Save updated lineup
     db.save_lineup(lineup.to_dicts())
 
     print(f"{first_name} {last_name} was added.")
 
 
 def main():
-    """Program entry point."""
-    # Load dicts from CSV using db.py
+    """
+    Main program flow:
+    - Load CSV into dictionaries (db.py)
+    - Convert dictionaries into Player objects (objects.py)
+    - Loop menu until exit
+    """
+    # Load dicts from CSV
     data = db.load_lineup()
 
-    # Convert dicts -> Player objects inside Lineup
+    # Create Lineup object and load Player objects into it
     lineup = Lineup()
     lineup.load_from_dicts(data)
 
     display_title()
 
+    # Ask for game date once at start
     game_date = get_game_date()
 
+    # Menu loop
     while True:
         display_menu(game_date)
         option = input("Menu option: ").strip()
 
         if option == "1":
-            # Display expects dicts, so convert objects -> dicts
             display(lineup.to_dicts())
-
         elif option == "2":
             add_player(lineup)
-
         elif option == "3":
             remove_player(lineup)
-
         elif option == "4":
             move_player(lineup)
-
         elif option == "5":
             edit_player_position(lineup)
-
         elif option == "6":
             edit_player_stats(lineup)
-
         elif option == "7":
             print("Bye!")
             break
-
         else:
             print("Invalid menu option. Please try again.")
 
