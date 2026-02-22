@@ -1,63 +1,87 @@
 # db.py
-# -------------------------------------
-# Section 2 improvement:
-# Work with a list of DICTIONARIES, not a list of lists.
-# We use simple text file I/O (not csv module) so it works cleanly
-# with dictionaries, as required by the spec.
-# -------------------------------------
+# ---------------------------------------------------------
+# Data layer (file access only) - required architecture
+# Supports:
+# - Old CSV format: name,position,at_bats,hits  (4 fields)
+# - New CSV format: first_name,last_name,position,at_bats,hits (5 fields)
+# Always SAVES in the NEW format (5 fields).
+# ---------------------------------------------------------
 
 from pathlib import Path
 
 DATA_FILE = Path("players.csv")
 
 
+def split_name(full_name):
+    """
+    Split a full name into first and last.
+    - First = first word
+    - Last  = remaining words (can be empty)
+    """
+    full_name = full_name.strip()
+    parts = full_name.split()
+
+    if len(parts) >= 2:
+        return parts[0], " ".join(parts[1:])
+    elif len(parts) == 1:
+        return parts[0], ""
+    else:
+        return "", ""
+
+
 def load_lineup():
     """
-    Load players from players.csv.
-    Returns a list of dictionaries like:
+    Load players from CSV.
+    Returns list of dicts in NEW structure:
     {
-        "name": "Tommy La Stella",
-        "position": "3B",
-        "at_bats": 1316,
-        "hits": 360
+      "first_name": "...",
+      "last_name": "...",
+      "position": "...",
+      "at_bats": int,
+      "hits": int
     }
     """
-
     lineup = []
 
-    # If file doesn't exist, return empty lineup (required behavior)
     if not DATA_FILE.exists():
         return lineup
 
-    # Read each line from the file
     with DATA_FILE.open("r", encoding="utf-8") as f:
         for line in f:
             line = line.strip()
-
-            # Skip blank lines
             if not line:
                 continue
 
-            # Split into 4 parts: name, position, at_bats, hits
-            parts = line.split(",")
+            parts = [p.strip() for p in line.split(",")]
 
-            # If the line doesn't have exactly 4 fields, skip it safely
-            if len(parts) != 4:
-                continue
+            # OLD format (4 fields): name,position,ab,hits
+            if len(parts) == 4:
+                first, last = split_name(parts[0])
+                pos = parts[1]
+                try:
+                    ab = int(parts[2])
+                    hits = int(parts[3])
+                except ValueError:
+                    continue
 
-            name = parts[0].strip()
-            pos = parts[1].strip()
+            # NEW format (5 fields): first,last,position,ab,hits
+            elif len(parts) == 5:
+                first = parts[0]
+                last = parts[1]
+                pos = parts[2]
+                try:
+                    ab = int(parts[3])
+                    hits = int(parts[4])
+                except ValueError:
+                    continue
 
-            # Convert numbers safely
-            try:
-                ab = int(parts[2].strip())
-                hits = int(parts[3].strip())
-            except ValueError:
-                # Skip lines with bad numeric data
+            else:
+                # Skip malformed lines safely
                 continue
 
             lineup.append({
-                "name": name,
+                "first_name": first,
+                "last_name": last,
                 "position": pos,
                 "at_bats": ab,
                 "hits": hits
@@ -68,12 +92,15 @@ def load_lineup():
 
 def save_lineup(lineup):
     """
-    Save list of dictionaries back to players.csv.
-    Overwrites the file each time.
+    Save list of dicts to CSV in NEW (5-field) format.
     """
-
     with DATA_FILE.open("w", encoding="utf-8") as f:
-        for player in lineup:
-            # Write each player dict as a CSV line (no header)
-            line = f"{player['name']},{player['position']},{player['at_bats']},{player['hits']}\n"
+        for p in lineup:
+            line = (
+                f"{p['first_name']},"
+                f"{p['last_name']},"
+                f"{p['position']},"
+                f"{p['at_bats']},"
+                f"{p['hits']}\n"
+            )
             f.write(line)
