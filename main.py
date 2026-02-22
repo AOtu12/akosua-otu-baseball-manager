@@ -190,37 +190,48 @@ def edit_player_position(lineup):
     print(f"{player.name} was updated.")
 
 def edit_player_stats(lineup):
-   # Get the selected player dictionary from the lineup list
-   # We subtract 1 because lineup numbers start at 1 for users,
-   # but Python list indexes start at 0.
-   player = lineup[num - 1]
+    """
+    Section 3 improvement:
+    Edit a player's at-bats and hits using Player objects.
+    Includes validation (no negatives, hits <= at-bats).
+    """
+    # Ask which player to edit (user sees lineup numbers starting at 1)
+    num = get_int("Lineup number: ")
 
-   # Display current player stats before editing
-   print(f"You selected {player['name']} AB={player['at_bats']} H={player['hits']}")
+    # Validate lineup number using the number of Player objects
+    if num < 1 or num > len(lineup.players):
+        print("Invalid lineup number.")
+        return
 
-   # Ask user for new statistics
-   new_ab = get_int("At bats: ")
-   new_hits = get_int("Hits: ")
+    # Get the selected Player object
+    player = lineup.players[num - 1]
 
-   # Validation: at-bats and hits must not be negative
-   if new_ab < 0 or new_hits < 0:
-      print("At bats and hits cannot be negative.")
-      return
+    # Show current stats before editing
+    print(f"You selected {player.name} AB={player.at_bats} H={player.hits}")
 
-   # Validation: hits cannot exceed at-bats
-   if new_hits > new_ab:
-      print("Hits cannot be greater than at bats.")
-      return
+    # Ask for new stats
+    new_ab = get_int("At bats: ")
+    new_hits = get_int("Hits: ")
 
-   # Update the player dictionary with new values
-   player["at_bats"] = new_ab
-   player["hits"] = new_hits
+    # Validation: at-bats and hits cannot be negative
+    if new_ab < 0 or new_hits < 0:
+        print("At bats and hits cannot be negative.")
+        return
 
-   # Save updated lineup back to CSV file
-   db.save_lineup(lineup)
+    # Validation: hits cannot exceed at-bats
+    if new_hits > new_ab:
+        print("Hits cannot be greater than at bats.")
+        return
 
-   # Confirm update to user
-   print(f"{player['name']} was updated.")
+    # Update the Player object
+    player.at_bats = new_ab
+    player.hits = new_hits
+
+    # Save updated lineup back to CSV (convert objects -> dicts)
+    db.save_lineup(lineup.to_dicts())
+
+    # Confirm update
+    print(f"{player.name} was updated.")
 
 def get_game_date():
     """
