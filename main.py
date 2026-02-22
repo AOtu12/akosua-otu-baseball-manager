@@ -324,8 +324,8 @@ def main():
         option = input("Menu option: ").strip()
 
         if option == "1":
-     # Convert Player objects back into dicts for the existing display() function
-           display(lineup.to_dicts())
+        # Convert Player objects back into dicts for the existing display() function
+          display(lineup.to_dicts())
 
        
         elif option == "2":
