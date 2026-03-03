@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Python: module db</title>
+</head><body>
+
+<table class="heading">
+<tr class="heading-text decor">
+<td class="title">&nbsp;<br><strong class="title">db</strong></td>
+<td class="extra"><a href=".">index</a><br><a href="file:c%3A%5Cusers%5Csuegi%5Cdesktop%5Cakosua_otu_baseball_sec3%5Cdb.py">c:\users\suegi\desktop\akosua_otu_baseball_sec3\db.py</a></td></tr></table>
+    <p><span class="code">#&nbsp;db.py<br>
+#&nbsp;---------------------------------------------------------<br>
+#&nbsp;Data&nbsp;layer&nbsp;(file&nbsp;access&nbsp;only)&nbsp;-&nbsp;required&nbsp;architecture<br>
+#&nbsp;Supports:<br>
+#&nbsp;-&nbsp;Old&nbsp;CSV&nbsp;format:&nbsp;name,position,at_bats,hits&nbsp;&nbsp;(4&nbsp;fields)<br>
+#&nbsp;-&nbsp;New&nbsp;CSV&nbsp;format:&nbsp;first_name,last_name,position,at_bats,hits&nbsp;(5&nbsp;fields)<br>
+#&nbsp;Always&nbsp;SAVES&nbsp;in&nbsp;the&nbsp;NEW&nbsp;format&nbsp;(5&nbsp;fields).<br>
+#&nbsp;---------------------------------------------------------</span></p>
+<p>
+<table class="section">
+<tr class="decor functions-decor heading-text">
+<td class="section-title" colspan=3>&nbsp;<br><strong class="bigsection">Functions</strong></td></tr>
+    
+<tr><td class="decor functions-decor"><span class="code">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></td><td>&nbsp;</td>
+<td class="singlecolumn"><dl><dt><a name="-load_lineup"><strong>load_lineup</strong></a>()</dt><dd><span class="code">Load&nbsp;players&nbsp;from&nbsp;CSV.<br>
+Returns&nbsp;list&nbsp;of&nbsp;dicts&nbsp;in&nbsp;NEW&nbsp;structure:<br>
+{<br>
+&nbsp;&nbsp;"first_name":&nbsp;"...",<br>
+&nbsp;&nbsp;"last_name":&nbsp;"...",<br>
+&nbsp;&nbsp;"position":&nbsp;"...",<br>
+&nbsp;&nbsp;"at_bats":&nbsp;int,<br>
+&nbsp;&nbsp;"hits":&nbsp;int<br>
+}</span></dd></dl>
+ <dl><dt><a name="-save_lineup"><strong>save_lineup</strong></a>(lineup)</dt><dd><span class="code">Save&nbsp;list&nbsp;of&nbsp;dicts&nbsp;to&nbsp;CSV&nbsp;in&nbsp;NEW&nbsp;(5-field)&nbsp;format.</span></dd></dl>
+ <dl><dt><a name="-split_name"><strong>split_name</strong></a>(full_name)</dt><dd><span class="code">Split&nbsp;a&nbsp;full&nbsp;name&nbsp;into&nbsp;first&nbsp;and&nbsp;last.<br>
+-&nbsp;First&nbsp;=&nbsp;first&nbsp;word<br>
+-&nbsp;Last&nbsp;&nbsp;=&nbsp;remaining&nbsp;words&nbsp;(can&nbsp;be&nbsp;empty)</span></dd></dl>
+</td></tr></table><p>
+<table class="section">
+<tr class="decor data-decor heading-text">
+<td class="section-title" colspan=3>&nbsp;<br><strong class="bigsection">Data</strong></td></tr>
+    
+<tr><td class="decor data-decor"><span class="code">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></td><td>&nbsp;</td>
+<td class="singlecolumn"><strong>DATA_FILE</strong> = WindowsPath('players.csv')</td></tr></table>
+</body></html>
