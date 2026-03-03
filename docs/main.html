@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Python: module main</title>
+</head><body>
+
+<table class="heading">
+<tr class="heading-text decor">
+<td class="title">&nbsp;<br><strong class="title">main</strong></td>
+<td class="extra"><a href=".">index</a><br><a href="file:c%3A%5Cusers%5Csuegi%5Cdesktop%5Cakosua_otu_baseball_sec3%5Cmain.py">c:\users\suegi\desktop\akosua_otu_baseball_sec3\main.py</a></td></tr></table>
+    <p><span class="code">#&nbsp;main.py<br>
+#&nbsp;---------------------------------------------------------<br>
+#&nbsp;Baseball&nbsp;Team&nbsp;Manager&nbsp;(Murach&nbsp;Case&nbsp;Study)<br>
+#&nbsp;Section&nbsp;3:&nbsp;Object-Oriented&nbsp;Version&nbsp;(Option&nbsp;2)<br>
+#<br>
+#&nbsp;This&nbsp;module&nbsp;should&nbsp;NOT&nbsp;handle&nbsp;formatting&nbsp;or&nbsp;input&nbsp;validation&nbsp;UI.<br>
+#&nbsp;Instead:<br>
+#&nbsp;-&nbsp;ui.py&nbsp;handles&nbsp;user&nbsp;interaction&nbsp;(input/output)<br>
+#&nbsp;-&nbsp;db.py&nbsp;handles&nbsp;file&nbsp;access&nbsp;(load/save&nbsp;CSV)<br>
+#&nbsp;-&nbsp;objects.py&nbsp;handles&nbsp;business&nbsp;objects&nbsp;(Player,&nbsp;Lineup)<br>
+#<br>
+#&nbsp;main.py&nbsp;acts&nbsp;as&nbsp;the&nbsp;"controller":<br>
+#&nbsp;-&nbsp;loads&nbsp;data<br>
+#&nbsp;-&nbsp;calls&nbsp;UI&nbsp;functions&nbsp;to&nbsp;get&nbsp;input&nbsp;and&nbsp;show&nbsp;output<br>
+#&nbsp;-&nbsp;calls&nbsp;Lineup/Player&nbsp;methods&nbsp;to&nbsp;perform&nbsp;actions<br>
+#&nbsp;-&nbsp;saves&nbsp;changes&nbsp;using&nbsp;db.py<br>
+#&nbsp;---------------------------------------------------------</span></p>
+<p>
+<table class="section">
+<tr class="decor pkg-content-decor heading-text">
+<td class="section-title" colspan=3>&nbsp;<br><strong class="bigsection">Modules</strong></td></tr>
+    
+<tr><td class="decor pkg-content-decor"><span class="code">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></td><td>&nbsp;</td>
+<td class="singlecolumn"><table><tr><td class="multicolumn"><a href="db.html">db</a><br>
+</td><td class="multicolumn"><a href="ui.html">ui</a><br>
+</td><td class="multicolumn"></td><td class="multicolumn"></td></tr></table></td></tr></table><p>
+<table class="section">
+<tr class="decor functions-decor heading-text">
+<td class="section-title" colspan=3>&nbsp;<br><strong class="bigsection">Functions</strong></td></tr>
+    
+<tr><td class="decor functions-decor"><span class="code">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></td><td>&nbsp;</td>
+<td class="singlecolumn"><dl><dt><a name="-add_player"><strong>add_player</strong></a>(lineup)</dt><dd><span class="code">Menu&nbsp;option&nbsp;2:&nbsp;Add&nbsp;a&nbsp;player.<br>
+Uses&nbsp;ui.py&nbsp;for&nbsp;input&nbsp;helpers&nbsp;and&nbsp;saves&nbsp;to&nbsp;CSV.</span></dd></dl>
+ <dl><dt><a name="-edit_player_position"><strong>edit_player_position</strong></a>(lineup)</dt><dd><span class="code">Menu&nbsp;option&nbsp;5:&nbsp;Edit&nbsp;a&nbsp;player's&nbsp;position.</span></dd></dl>
+ <dl><dt><a name="-edit_player_stats"><strong>edit_player_stats</strong></a>(lineup)</dt><dd><span class="code">Menu&nbsp;option&nbsp;6:&nbsp;Edit&nbsp;a&nbsp;player's&nbsp;stats&nbsp;(AB/H)&nbsp;with&nbsp;validation.</span></dd></dl>
+ <dl><dt><a name="-get_game_date"><strong>get_game_date</strong></a>()</dt><dd><span class="code">Ask&nbsp;user&nbsp;for&nbsp;game&nbsp;date&nbsp;in&nbsp;YYYY-MM-DD&nbsp;format.<br>
+User&nbsp;can&nbsp;press&nbsp;Enter&nbsp;to&nbsp;skip.<br>
+Returns:<br>
+&nbsp;&nbsp;-&nbsp;date&nbsp;object&nbsp;if&nbsp;entered<br>
+&nbsp;&nbsp;-&nbsp;None&nbsp;if&nbsp;skipped<br>
+NOTE:&nbsp;This&nbsp;can&nbsp;stay&nbsp;in&nbsp;main.py&nbsp;or&nbsp;be&nbsp;moved&nbsp;to&nbsp;ui.py&nbsp;later.</span></dd></dl>
+ <dl><dt><a name="-main"><strong>main</strong></a>()</dt><dd><span class="code">Program&nbsp;entry&nbsp;point:<br>
+-&nbsp;Load&nbsp;CSV&nbsp;-&gt;&nbsp;list&nbsp;of&nbsp;dicts&nbsp;(db.py)<br>
+-&nbsp;Convert&nbsp;dicts&nbsp;-&gt;&nbsp;Player&nbsp;objects&nbsp;in&nbsp;Lineup&nbsp;(objects.py)<br>
+-&nbsp;Menu&nbsp;loop&nbsp;(ui.py&nbsp;displays)</span></dd></dl>
+ <dl><dt><a name="-move_player"><strong>move_player</strong></a>(lineup)</dt><dd><span class="code">Menu&nbsp;option&nbsp;4:&nbsp;Move&nbsp;a&nbsp;player&nbsp;to&nbsp;a&nbsp;new&nbsp;lineup&nbsp;position.</span></dd></dl>
+ <dl><dt><a name="-remove_player"><strong>remove_player</strong></a>(lineup)</dt><dd><span class="code">Menu&nbsp;option&nbsp;3:&nbsp;Remove&nbsp;a&nbsp;player.</span></dd></dl>
+</td></tr></table>
+</body></html>
