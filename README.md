@@ -1,17 +1,18 @@
+ ⚾ Baseball Team Manager (Python OOP + SQLite + GUI Project)
 
-⚾ Baseball Team Manager (Python OOP Project)
+ 📌 Project Overview
 
-📌 Project Overview
-
-This project is a **Baseball Team Manager console application** developed in Python.
-It allows users to manage a baseball team lineup by adding, editing, moving, and removing players while saving data permanently in a CSV file.
-
-The project was completed as part of a **Python Programming II (CPRO 2201) midterm project** and demonstrates:
+This project is a **Baseball Team Manager application** developed in Python.
+It started as a console-based system and was enhanced to include:
 
 * Object-Oriented Programming (OOP)
-* File handling using CSV
-* Modular program design (UI, objects, database layers)
-* Input validation and data persistence
+* CSV file persistence (Sections 1–3)
+* SQLite database integration (Section 4)
+* Graphical User Interface (GUI) using Tkinter
+
+The application allows users to manage a baseball team lineup, edit player data, and store information permanently.
+
+This project was completed as part of the **Python Programming II (CPRO 2201) midterm/final project**.
 
 ---
 
@@ -20,11 +21,18 @@ The project was completed as part of a **Python Programming II (CPRO 2201) midte
 ```
 project folder/
 │
-├── main.py        → Main program (control flow)
-├── objects.py     → Player & Lineup classes
-├── db.py          → File/data access layer
-├── ui.py          → User interface display functions
-├── players.csv    → Persistent player data
+├── main.py            → Console application (Sections 1–3)
+├── objects.py         → Player & Lineup classes (OOP)
+├── db.py              → CSV file data layer
+├── ui.py              → Console UI functions
+│
+├── db_sqlite.py       → SQLite database access layer
+├── player_gui.py      → Tkinter GUI application
+│
+├── players.csv        → CSV data storage (Sections 1–3)
+├── baseball.sqlite    → SQLite database (Section 4)
+│
+├── docs/              → Auto-generated documentation (pydoc)
 └── README.md
 ```
 
@@ -32,7 +40,7 @@ project folder/
 
 ⚙️ Features
 
-👥 Player Management
+👥 Player Management (Console Version)
 
 * Add new players (first name, last name, position, stats)
 * Remove players
@@ -40,24 +48,30 @@ project folder/
 * Edit player position
 * Edit batting statistics (at-bats and hits)
 
-📊 Statistics
+---
+
+ 📊 Statistics
 
 * Automatic batting average calculation
-* Always displayed to 3 decimal places
-* Validation:
+* Displayed to **3 decimal places**
+* Validation rules:
 
   * Hits cannot exceed at-bats
   * No negative values allowed
 
-📅 Game Date Feature
+---
+
+ 📅 Game Date Feature
 
 * Optional game date entry
 * Current date always displayed
-* Days until game shown only if the date is in the future
+* Days until game shown **only if the date is in the future**
 
-💾 Data Persistence
+---
 
-* Player data saved in `players.csv`
+ 💾 Data Persistence (CSV – Sections 1–3)
+
+* Data stored in `players.csv`
 * Supports:
 
   * Old format (single name field)
@@ -65,35 +79,119 @@ project folder/
 
 ---
 
-🧑‍💻 Technologies Used
+🗄️ Section 4 — Database Integration (SQLite)
 
-* Python 3
-* Object-Oriented Programming
-* File I/O (CSV text format)
-* Git & GitHub for version control
+* Replaced CSV storage with a **SQLite database**
+* Database file: `baseball.sqlite`
+* Table used:
+
+```
+Player(
+    playerID INTEGER PRIMARY KEY,
+    batOrder INTEGER NOT NULL,
+    firstName TEXT NOT NULL,
+    lastName TEXT NOT NULL,
+    position TEXT NOT NULL,
+    atBats INTEGER,
+    hits INTEGER
+)
+```
 
 ---
 
-▶️ How to Run
+ 🧩 Enhancement — Position Table
 
-1. Open terminal or PowerShell in the project folder.
-2. Run:
+An additional table was implemented:
+
+```
+Position(
+    positionID INTEGER PRIMARY KEY,
+    positionValue TEXT UNIQUE
+)
+```
+
+* Stores valid positions (C, 1B, 2B, etc.)
+* Used in GUI as a dropdown (Combobox)
+* Improves data integrity and user input validation
+
+---
+
+🖥️ GUI Application (Tkinter)
+
+The GUI allows users to manage player data easily.
+
+ Features:
+
+* 🔍 **Get Player**
+
+  * Enter Player ID to retrieve player data
+  * Displays data in editable fields
+  * Shows error if player not found
+
+* 💾 **Save Changes**
+
+  * Updates:
+
+    * First name
+    * Last name
+    * Position (dropdown)
+    * At bats
+    * Hits
+  * Saves to database
+  * Clears fields after saving
+
+* ❌ **Cancel**
+
+  * Restores original data (not just clearing)
+  
+
+* ⛔ **Batting order is NOT editable in GUI** (as required)
+
+---
+
+🧑‍💻 Technologies Used
+
+* Python 3
+* Object-Oriented Programming (OOP)
+* SQLite (database)
+* Tkinter (GUI)
+* File I/O (CSV)
+* Git & GitHub (version control)
+
+---
+
+ ▶️ How to Run
+
+ Run Console Version (Sections 1–3)
 
 ```bash
 python main.py
 ```
 
-3. Follow the menu prompts.
+---
+
+ Run GUI Version (Section 4)
+
+```bash
+python player_gui.py
+```
 
 ---
 
-🧪 Testing Notes
+ 🧪 Testing Notes
 
-You can test the game date feature:
+ Game Date Testing
 
-* Press **Enter** → Skip game date
-* Enter future date → Shows days until game
-* Enter past date → Shows date only (no days)
+* Press **Enter** → skip date
+* Future date → shows days remaining
+* Past date → shows date only
+
+ GUI Testing
+
+* Enter valid Player ID → data loads
+* Enter invalid ID → error + fields cleared
+* Edit values → Save Changes updates DB
+* Edit values → Cancel restores original data
 
 ---
 
@@ -101,15 +199,16 @@ You can test the game date feature:
 
 This project demonstrates:
 
-* OOP design with classes and methods
+* Object-Oriented Programming design
 * Separation of concerns (UI, logic, data layers)
-* Data validation techniques
-* Git commit tracking during development
+* File handling and database integration
+* GUI development using Tkinter
+* Data validation and persistence
+* Incremental development using Git
 
 ---
 
-👤 Author
+ 👤 Author
 
 **Akosua Otu**
-Python Programming II 
-
+Python Programming II (CPRO 2201)
