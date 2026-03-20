@@ -60,7 +60,23 @@ def update_player(player_id, position, at_bats, hits):
     conn.commit()
     conn.close()
 
+def add_player(bat_order, first_name, last_name, position, at_bats, hits):
+    """Add a new player to the database."""
+    conn = connect()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        INSERT INTO Player (batOrder, firstName, lastName, position, atBats, hits)
+        VALUES (?, ?, ?, ?, ?, ?)
+    """, (bat_order, first_name, last_name, position, at_bats, hits))
+
+    conn.commit()
+    conn.close()    
+
 
 if __name__ == "__main__":
-    update_player(1, "1B", 1400, 400)
-    print(get_player(1))
+    add_player(10, "Akosua", "Otu", "P", 10, 4)
+
+    players = get_all_players()
+    for player in players:
+        print(player)
