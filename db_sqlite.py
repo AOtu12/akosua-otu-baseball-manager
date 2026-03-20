@@ -120,5 +120,6 @@ def update_bat_order(player_id, new_bat_order):
     conn.close()
 
 if __name__ == "__main__":
-    positions = get_positions()
-    print(positions)
+    players = get_all_players()
+    for player in players:
+        print(player)
