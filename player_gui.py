@@ -1,13 +1,15 @@
 # player_gui.py
 # ---------------------------------------------------------
 # Section 4: GUI for Baseball Team Manager
+# Final version with Position table enhancement
 # - Get Player
 # - Save Changes
 # - Cancel restores loaded data
+# - Position dropdown loads values from Position table
 # ---------------------------------------------------------
 
 import tkinter as tk
-from tkinter import messagebox
+from tkinter import messagebox, ttk
 import db_sqlite
 
 
@@ -22,11 +24,14 @@ def main():
     # (playerID, batOrder, firstName, lastName, position, atBats, hits)
     current_player = None
 
+    # Load valid positions from the Position table
+    positions = db_sqlite.get_positions()
+
     def clear_fields():
         """Clear all entry fields except player ID."""
         entry_first.delete(0, tk.END)
         entry_last.delete(0, tk.END)
-        entry_position.delete(0, tk.END)
+        entry_position.set("")
         entry_at_bats.delete(0, tk.END)
         entry_hits.delete(0, tk.END)
 
@@ -66,8 +71,7 @@ def main():
         entry_last.delete(0, tk.END)
         entry_last.insert(0, player[3])
 
-        entry_position.delete(0, tk.END)
-        entry_position.insert(0, player[4])
+        entry_position.set(player[4])
 
         entry_at_bats.delete(0, tk.END)
         entry_at_bats.insert(0, player[5])
@@ -124,8 +128,7 @@ def main():
         entry_last.delete(0, tk.END)
         entry_last.insert(0, current_player[3])
 
-        entry_position.delete(0, tk.END)
-        entry_position.insert(0, current_player[4])
+        entry_position.set(current_player[4])
 
         entry_at_bats.delete(0, tk.END)
         entry_at_bats.insert(0, current_player[5])
@@ -151,9 +154,9 @@ def main():
     entry_last = tk.Entry(root)
     entry_last.grid(row=2, column=1, padx=10, pady=5)
 
-    # Position
+    # Position (dropdown from Position table)
     tk.Label(root, text="Position:").grid(row=3, column=0, padx=10, pady=5, sticky="e")
-    entry_position = tk.Entry(root)
+    entry_position = ttk.Combobox(root, values=positions, state="readonly")
     entry_position.grid(row=3, column=1, padx=10, pady=5)
 
     # At Bats
