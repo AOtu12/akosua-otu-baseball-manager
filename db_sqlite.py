@@ -86,9 +86,20 @@ def delete_player(player_id):
     conn.commit()
     conn.close()
 
-if __name__ == "__main__":
-    delete_player(10)
+def update_bat_order(player_id, new_bat_order):
+    """Update a player's batting order."""
+    conn = connect()
+    cursor = conn.cursor()
 
-    players = get_all_players()
-    for player in players:
-        print(player)
+    cursor.execute("""
+        UPDATE Player
+        SET batOrder = ?
+        WHERE playerID = ?
+    """, (new_bat_order, player_id))
+
+    conn.commit()
+    conn.close()
+
+if __name__ == "__main__":
+    update_bat_order(1, 2)
+    print(get_player(1))
