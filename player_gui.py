@@ -1,7 +1,7 @@
 # player_gui.py
 # ---------------------------------------------------------
 # Section 4: GUI for Baseball Team Manager
-# Step 3: Connect Get Player button to database
+# Step 4: Connect Get Player and Save Changes buttons
 # ---------------------------------------------------------
 
 import tkinter as tk
@@ -15,11 +15,18 @@ def main():
     root.title("Player Maintenance")
     root.geometry("420x300")
 
+    def clear_fields():
+        """Clear all entry fields except player ID."""
+        entry_first.delete(0, tk.END)
+        entry_last.delete(0, tk.END)
+        entry_position.delete(0, tk.END)
+        entry_at_bats.delete(0, tk.END)
+        entry_hits.delete(0, tk.END)
+
     def get_player():
         """Fetch player by ID and display data in entry boxes."""
         player_id_text = entry_id.get().strip()
 
-        # Validate player ID input
         if player_id_text == "":
             messagebox.showerror("Error", "Please enter a Player ID.")
             return
@@ -32,7 +39,6 @@ def main():
 
         player = db_sqlite.get_player(player_id)
 
-        # If player not found, show error and clear fields
         if player is None:
             messagebox.showerror("Error", "Player not found.")
             clear_fields()
@@ -55,13 +61,30 @@ def main():
         entry_hits.delete(0, tk.END)
         entry_hits.insert(0, player[6])
 
-    def clear_fields():
-        """Clear all entry fields except player ID."""
-        entry_first.delete(0, tk.END)
-        entry_last.delete(0, tk.END)
-        entry_position.delete(0, tk.END)
-        entry_at_bats.delete(0, tk.END)
-        entry_hits.delete(0, tk.END)
+    def save_changes():
+        """Save edited player data back to the database."""
+        player_id_text = entry_id.get().strip()
+
+        if player_id_text == "":
+            messagebox.showerror("Error", "Please enter a Player ID first.")
+            return
+
+        try:
+            player_id = int(player_id_text)
+            at_bats = int(entry_at_bats.get().strip())
+            hits = int(entry_hits.get().strip())
+        except ValueError:
+            messagebox.showerror("Error", "Player ID, At Bats, and Hits must be integers.")
+            return
+
+        position = entry_position.get().strip()
+
+        # Save only position, atBats, and hits
+        db_sqlite.update_player(player_id, position, at_bats, hits)
+
+        messagebox.showinfo("Success", "Player updated successfully.")
+        clear_fields()
+        entry_id.delete(0, tk.END)
 
     # Player ID
     tk.Label(root, text="Player ID:").grid(row=0, column=0, padx=10, pady=10, sticky="e")
@@ -96,13 +119,18 @@ def main():
     entry_hits = tk.Entry(root)
     entry_hits.grid(row=5, column=1, padx=10, pady=5)
 
-    # Buttons
-    btn_save = tk.Button(root, text="Save Changes")
-    btn_save.grid(row=6, column=1, padx=10, pady=15, sticky="w")
+    # Create a frame for buttons
+    frame_buttons = tk.Frame(root)
+    frame_buttons.grid(row=6, column=1, columnspan=1, pady=15)
 
-    btn_cancel = tk.Button(root, text="Cancel")
-    btn_cancel.grid(row=6, column=1, padx=10, pady=15, sticky="e")
+    # Save button
+    btn_save = tk.Button(frame_buttons, text="Save Changes", command=save_changes)
+    btn_save.pack(side="left", padx=5)
 
+    # Cancel button
+    btn_cancel = tk.Button(frame_buttons, text="Cancel", command=clear_fields)
+    btn_cancel.pack(side="left", padx=5)
+    
     # Start GUI loop
     root.mainloop()
 
