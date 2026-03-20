@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Python: module db_sqlite</title>
+</head><body>
+
+<table class="heading">
+<tr class="heading-text decor">
+<td class="title">&nbsp;<br><strong class="title">db_sqlite</strong></td>
+<td class="extra"><a href=".">index</a><br><a href="file:c%3A%5Cusers%5Csuegi%5Cdesktop%5Cakosua_otu_baseball_sec3%5Cdb_sqlite.py">c:\users\suegi\desktop\akosua_otu_baseball_sec3\db_sqlite.py</a></td></tr></table>
+    <p><span class="code">#&nbsp;db_sqlite.py<br>
+#&nbsp;-----------------------------------------<br>
+#&nbsp;SQLite&nbsp;database&nbsp;access&nbsp;for&nbsp;my&nbsp;Baseball&nbsp;Team&nbsp;Manager<br>
+#&nbsp;-----------------------------------------</span></p>
+<p>
+<table class="section">
+<tr class="decor pkg-content-decor heading-text">
+<td class="section-title" colspan=3>&nbsp;<br><strong class="bigsection">Modules</strong></td></tr>
+    
+<tr><td class="decor pkg-content-decor"><span class="code">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></td><td>&nbsp;</td>
+<td class="singlecolumn"><table><tr><td class="multicolumn"><a href="sqlite3.html">sqlite3</a><br>
+</td><td class="multicolumn"></td><td class="multicolumn"></td><td class="multicolumn"></td></tr></table></td></tr></table><p>
+<table class="section">
+<tr class="decor functions-decor heading-text">
+<td class="section-title" colspan=3>&nbsp;<br><strong class="bigsection">Functions</strong></td></tr>
+    
+<tr><td class="decor functions-decor"><span class="code">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></td><td>&nbsp;</td>
+<td class="singlecolumn"><dl><dt><a name="-add_player"><strong>add_player</strong></a>(bat_order, first_name, last_name, position, at_bats, hits)</dt><dd><span class="code">Add&nbsp;a&nbsp;new&nbsp;player&nbsp;to&nbsp;the&nbsp;database.</span></dd></dl>
+ <dl><dt><a name="-connect"><strong>connect</strong></a>()</dt><dd><span class="code">Create&nbsp;and&nbsp;return&nbsp;a&nbsp;database&nbsp;connection.</span></dd></dl>
+ <dl><dt><a name="-delete_player"><strong>delete_player</strong></a>(player_id)</dt><dd><span class="code">Delete&nbsp;a&nbsp;player&nbsp;by&nbsp;playerID.</span></dd></dl>
+ <dl><dt><a name="-get_all_players"><strong>get_all_players</strong></a>()</dt><dd><span class="code">Return&nbsp;all&nbsp;players&nbsp;ordered&nbsp;by&nbsp;batOrder.</span></dd></dl>
+ <dl><dt><a name="-get_player"><strong>get_player</strong></a>(player_id)</dt><dd><span class="code">Return&nbsp;one&nbsp;player&nbsp;by&nbsp;playerID,&nbsp;or&nbsp;None&nbsp;if&nbsp;not&nbsp;found.</span></dd></dl>
+ <dl><dt><a name="-get_positions"><strong>get_positions</strong></a>()</dt><dd><span class="code">Return&nbsp;all&nbsp;valid&nbsp;position&nbsp;values&nbsp;from&nbsp;the&nbsp;Position&nbsp;table.</span></dd></dl>
+ <dl><dt><a name="-update_bat_order"><strong>update_bat_order</strong></a>(player_id, new_bat_order)</dt><dd><span class="code">Update&nbsp;a&nbsp;player's&nbsp;batting&nbsp;order.</span></dd></dl>
+ <dl><dt><a name="-update_player"><strong>update_player</strong></a>(player_id, first_name, last_name, position, at_bats, hits)</dt><dd><span class="code">Update&nbsp;a&nbsp;player's&nbsp;name,&nbsp;position,&nbsp;and&nbsp;batting&nbsp;stats.</span></dd></dl>
+</td></tr></table><p>
+<table class="section">
+<tr class="decor data-decor heading-text">
+<td class="section-title" colspan=3>&nbsp;<br><strong class="bigsection">Data</strong></td></tr>
+    
+<tr><td class="decor data-decor"><span class="code">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></td><td>&nbsp;</td>
+<td class="singlecolumn"><strong>DB_FILE</strong> = 'baseball.sqlite'</td></tr></table>
+</body></html>
