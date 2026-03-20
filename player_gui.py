@@ -1,7 +1,9 @@
 # player_gui.py
 # ---------------------------------------------------------
 # Section 4: GUI for Baseball Team Manager
-# Step 4: Connect Get Player and Save Changes buttons
+# - Get Player
+# - Save Changes
+# - Cancel restores loaded data
 # ---------------------------------------------------------
 
 import tkinter as tk
@@ -15,6 +17,11 @@ def main():
     root.title("Player Maintenance")
     root.geometry("420x300")
 
+    # Store the last player loaded from the database
+    # Format:
+    # (playerID, batOrder, firstName, lastName, position, atBats, hits)
+    current_player = None
+
     def clear_fields():
         """Clear all entry fields except player ID."""
         entry_first.delete(0, tk.END)
@@ -25,8 +32,11 @@ def main():
 
     def get_player():
         """Fetch player by ID and display data in entry boxes."""
+        nonlocal current_player
+
         player_id_text = entry_id.get().strip()
 
+        # Validate player ID input
         if player_id_text == "":
             messagebox.showerror("Error", "Please enter a Player ID.")
             return
@@ -39,10 +49,14 @@ def main():
 
         player = db_sqlite.get_player(player_id)
 
+        # If player not found, show error and clear fields
         if player is None:
             messagebox.showerror("Error", "Player not found.")
             clear_fields()
             return
+
+        # Save loaded player so Cancel can restore it
+        current_player = player
 
         # player tuple:
         # (playerID, batOrder, firstName, lastName, position, atBats, hits)
@@ -63,6 +77,8 @@ def main():
 
     def save_changes():
         """Save edited player data back to the database."""
+        nonlocal current_player
+
         player_id_text = entry_id.get().strip()
 
         if player_id_text == "":
@@ -77,14 +93,45 @@ def main():
             messagebox.showerror("Error", "Player ID, At Bats, and Hits must be integers.")
             return
 
+        # Read edited values from entry boxes
+        first_name = entry_first.get().strip()
+        last_name = entry_last.get().strip()
         position = entry_position.get().strip()
 
-        # Save only position, atBats, and hits
-        db_sqlite.update_player(player_id, position, at_bats, hits)
+        # Save all editable fields
+        db_sqlite.update_player(player_id, first_name, last_name, position, at_bats, hits)
+
+        # Update current_player snapshot to match saved values
+        current_player = (player_id, None, first_name, last_name, position, at_bats, hits)
 
         messagebox.showinfo("Success", "Player updated successfully.")
         clear_fields()
         entry_id.delete(0, tk.END)
+
+    def cancel_changes():
+        """Restore the last loaded player data into the entry fields."""
+        nonlocal current_player
+
+        # If no player was loaded yet, just clear the fields
+        if current_player is None:
+            clear_fields()
+            return
+
+        # Restore saved values into the entry boxes
+        entry_first.delete(0, tk.END)
+        entry_first.insert(0, current_player[2])
+
+        entry_last.delete(0, tk.END)
+        entry_last.insert(0, current_player[3])
+
+        entry_position.delete(0, tk.END)
+        entry_position.insert(0, current_player[4])
+
+        entry_at_bats.delete(0, tk.END)
+        entry_at_bats.insert(0, current_player[5])
+
+        entry_hits.delete(0, tk.END)
+        entry_hits.insert(0, current_player[6])
 
     # Player ID
     tk.Label(root, text="Player ID:").grid(row=0, column=0, padx=10, pady=10, sticky="e")
@@ -121,16 +168,16 @@ def main():
 
     # Create a frame for buttons
     frame_buttons = tk.Frame(root)
-    frame_buttons.grid(row=6, column=1, columnspan=1, pady=15)
+    frame_buttons.grid(row=6, column=0, columnspan=2, pady=15)
 
     # Save button
     btn_save = tk.Button(frame_buttons, text="Save Changes", command=save_changes)
-    btn_save.pack(side="left", padx=5)
+    btn_save.pack(side="left", padx=10)
 
     # Cancel button
-    btn_cancel = tk.Button(frame_buttons, text="Cancel", command=clear_fields)
-    btn_cancel.pack(side="left", padx=5)
-    
+    btn_cancel = tk.Button(frame_buttons, text="Cancel", command=cancel_changes)
+    btn_cancel.pack(side="left", padx=10)
+
     # Start GUI loop
     root.mainloop()
 
