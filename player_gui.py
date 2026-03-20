@@ -1,7 +1,6 @@
 # player_gui.py
 # ---------------------------------------------------------
 # Section 4: GUI for Baseball Team Manager
-# Final version with Position table enhancement
 # - Get Player
 # - Save Changes
 # - Cancel restores loaded data
