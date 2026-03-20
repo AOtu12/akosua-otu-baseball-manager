@@ -73,9 +73,21 @@ def add_player(bat_order, first_name, last_name, position, at_bats, hits):
     conn.commit()
     conn.close()    
 
+def delete_player(player_id):
+    """Delete a player by playerID."""
+    conn = connect()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        DELETE FROM Player
+        WHERE playerID = ?
+    """, (player_id,))
+
+    conn.commit()
+    conn.close()
 
 if __name__ == "__main__":
-    add_player(10, "Akosua", "Otu", "P", 10, 4)
+    delete_player(10)
 
     players = get_all_players()
     for player in players:
