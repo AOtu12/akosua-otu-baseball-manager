@@ -44,7 +44,23 @@ def get_player(player_id):
     conn.close()
     return row
 
+def update_player(player_id, position, at_bats, hits):
+    """Update a player's position and batting stats."""
+    conn = connect()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        UPDATE Player
+        SET position = ?,
+            atBats = ?,
+            hits = ?
+        WHERE playerID = ?
+    """, (position, at_bats, hits, player_id))
+
+    conn.commit()
+    conn.close()
+
 
 if __name__ == "__main__":
-    player = get_player(1)
-    print(player)
+    update_player(1, "1B", 1400, 400)
+    print(get_player(1))
