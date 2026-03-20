@@ -1,6 +1,6 @@
 # db_sqlite.py
 # -----------------------------------------
-# SQLite database access for MY Baseball Team Manager
+# SQLite database access for my Baseball Team Manager
 # -----------------------------------------
 
 import sqlite3
@@ -29,8 +29,22 @@ def get_all_players():
     return rows
 
 
-if __name__ == "__main__":
-    players = get_all_players()
+def get_player(player_id):
+    """Return one player by playerID, or None if not found."""
+    conn = connect()
+    cursor = conn.cursor()
 
-    for player in players:
-        print(player)
+    cursor.execute("""
+        SELECT playerID, batOrder, firstName, lastName, position, atBats, hits
+        FROM Player
+        WHERE playerID = ?
+    """, (player_id,))
+
+    row = cursor.fetchone()
+    conn.close()
+    return row
+
+
+if __name__ == "__main__":
+    player = get_player(1)
+    print(player)
