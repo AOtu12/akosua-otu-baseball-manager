@@ -44,6 +44,23 @@ def get_player(player_id):
     conn.close()
     return row
 
+def get_positions():
+    """Return all valid position values from the Position table."""
+    conn = connect()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT positionValue
+        FROM Position
+        ORDER BY positionID
+    """)
+
+    rows = cursor.fetchall()
+    conn.close()
+
+    # Convert list of tuples into a simple list of strings
+    return [row[0] for row in rows]
+
 def update_player(player_id, first_name, last_name, position, at_bats, hits):
     """Update a player's name, position, and batting stats."""
     conn = connect()
@@ -103,6 +120,5 @@ def update_bat_order(player_id, new_bat_order):
     conn.close()
 
 if __name__ == "__main__":
-    players = get_all_players()
-    for player in players:
-        print(player)
+    positions = get_positions()
+    print(positions)
